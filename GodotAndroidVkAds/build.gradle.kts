@@ -32,9 +32,9 @@ android {
 }
 
 dependencies {
-    implementation("com.my.target:mytarget-sdk:5.21.0")          // Vk mobile ads
-    implementation("org.godotengine:godot:4.2.2.stable")        // Godot
-    implementation("androidx.test.ext:junit:1.1.5")
+    implementation("com.my.target:mytarget-sdk:5.22.1")         // Vk mobile ads
+    implementation("org.godotengine:godot:4.3.0.stable")        // Godot
+    implementation("androidx.test.ext:junit:1.2.1")
 }
 
 val copyDebugAARToPluginAddons by tasks.registering(Copy::class) {

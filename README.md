@@ -39,13 +39,6 @@ And insert the ID of your ad.
 In build.gradle along the way "android/build/build.gradle" add the following code:
 
 ```
-dependencies {
-    ...
-    implementation "com.my.target:mytarget-sdk:5.21.0"
-}
-```
-
-```
 android {
 
     compileOptions {
