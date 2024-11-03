@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation("com.my.target:mytarget-sdk:5.22.1")         // Vk mobile ads
+    implementation("com.my.target:mytarget-sdk:5.23.0")         // Vk mobile ads
     implementation("org.godotengine:godot:4.3.0.stable")        // Godot
     implementation("androidx.test.ext:junit:1.2.1")
 }
