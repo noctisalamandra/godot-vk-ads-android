@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "godotandroidvkads"
+rootProject.name = "godot-android-vk-ads"
 include(":GodotAndroidVkAds")
