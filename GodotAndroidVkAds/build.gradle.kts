@@ -10,7 +10,7 @@ val pluginPackageName = "com.darkmoonight.godotandroidvkads"
 
 android {
     namespace = pluginPackageName
-    compileSdk = 34
+    compileSdk = 36
 
     buildFeatures {
         buildConfig = true
@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation("com.my.target:mytarget-sdk:5.27.1")         // Vk mobile ads
-    implementation("org.godotengine:godot:4.3.0.stable")        // Godot
+    implementation("org.godotengine:godot:4.4.1.stable")        // Godot
     implementation("androidx.test.ext:junit:1.2.1")
 }
 

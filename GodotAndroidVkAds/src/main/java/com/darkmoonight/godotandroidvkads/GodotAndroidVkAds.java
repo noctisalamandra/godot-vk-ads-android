@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,7 +15,6 @@ import com.my.target.ads.InterstitialAd;
 import com.my.target.ads.MyTargetView;
 import com.my.target.ads.Reward;
 import com.my.target.ads.RewardedAd;
-import com.my.target.common.MyTargetConfig;
 import com.my.target.common.MyTargetManager;
 import com.my.target.common.models.IAdLoadingError;
 
@@ -53,30 +51,37 @@ public class GodotAndroidVkAds extends GodotPlugin {
     @Override
     public Set<SignalInfo> getPluginSignals() {
         Set<SignalInfo> signals = new ArraySet<>();
+        addBannerSignals(signals);
+        addRewardedSignals(signals);
+        addInterstitialSignals(signals);
+        return signals;
+    }
 
-        /* Banner */
+    private void addBannerSignals(Set<SignalInfo> signals) {
         signals.add(new SignalInfo("_on_banner_loaded"));
         signals.add(new SignalInfo("_on_banner_failed_to_load", Integer.class));
         signals.add(new SignalInfo("_on_banner_clicked"));
         signals.add(new SignalInfo("_on_banner_show"));
+    }
 
-        /* Rewarded */
+    private void addRewardedSignals(Set<SignalInfo> signals) {
         signals.add(new SignalInfo("_on_rewarded_video_ad_loaded"));
         signals.add(new SignalInfo("_on_rewarded_video_ad_failed_to_load", Integer.class));
         signals.add(new SignalInfo("_on_rewarded_video_ad_display"));
         signals.add(new SignalInfo("_on_rewarded_video_ad_dismissed"));
         signals.add(new SignalInfo("_on_rewarded_video_ad_clicked"));
         signals.add(new SignalInfo("_on_rewarded", String.class));
+        signals.add(new SignalInfo("_on_rewarded_video_ad_failed_to_show", String.class));
+    }
 
-        /* Interstitial */
+    private void addInterstitialSignals(Set<SignalInfo> signals) {
         signals.add(new SignalInfo("_on_interstitial_loaded"));
         signals.add(new SignalInfo("_on_interstitial_failed_to_load", Integer.class));
         signals.add(new SignalInfo("_on_interstitial_ad_display"));
         signals.add(new SignalInfo("_on_interstitial_ad_video_completed"));
         signals.add(new SignalInfo("_on_interstitial_ad_dismissed"));
         signals.add(new SignalInfo("_on_interstitial_clicked"));
-
-        return signals;
+        signals.add(new SignalInfo("_on_interstitial_ad_failed_to_show", String.class));
     }
 
     /* Init */
@@ -101,13 +106,18 @@ public class GodotAndroidVkAds extends GodotPlugin {
 
         bannerAdView = new MyTargetView(activity);
         bannerAdView.setSlotId(id);
-
         bannerAdView.setBackgroundColor(Color.TRANSPARENT);
+        bannerAdView.setListener(createBannerAdListener());
 
-        bannerAdView.setListener(new MyTargetView.MyTargetViewListener() {
+        layout.addView(bannerAdView, adParams);
+        bannerAdView.load();
+        return bannerAdView;
+    }
+
+    private MyTargetView.MyTargetViewListener createBannerAdListener() {
+        return new MyTargetView.MyTargetViewListener() {
             @Override
             public void onLoad(@NonNull MyTargetView myTargetView) {
-                layout.addView(bannerAdView, adParams);
                 Log.w("godot", "VkAds: onBannerAdLoaded");
                 emitSignal("_on_banner_loaded");
             }
@@ -129,10 +139,7 @@ public class GodotAndroidVkAds extends GodotPlugin {
                 Log.w("godot", "VkAds: onBannerAdClicked");
                 emitSignal("_on_banner_clicked");
             }
-        });
-
-        bannerAdView.load();
-        return bannerAdView;
+        };
     }
 
     @UsedByGodot
@@ -167,7 +174,7 @@ public class GodotAndroidVkAds extends GodotPlugin {
             }
 
             if (bannerAdView != null) {
-                layout.removeView(bannerAdView); // Remove the banner
+                layout.removeView(bannerAdView);
                 Log.d("godot", "VkAds: Remove Banner");
             } else {
                 Log.w("godot", "VkAds: Banner not found");
@@ -190,7 +197,13 @@ public class GodotAndroidVkAds extends GodotPlugin {
     /* Rewarded */
     private RewardedAd initRewardedVideo(final int id) {
         rewardedAd = new RewardedAd(id, activity);
-        rewardedAd.setListener(new RewardedAd.RewardedAdListener() {
+        rewardedAd.setListener(createRewardedAdListener());
+        rewardedAd.load();
+        return rewardedAd;
+    }
+
+    private RewardedAd.RewardedAdListener createRewardedAdListener() {
+        return new RewardedAd.RewardedAdListener() {
             @Override
             public void onLoad(@NonNull RewardedAd rewardedAd) {
                 Log.w("godot", "VkAds: onRewardedVideoAdLoaded");
@@ -210,6 +223,12 @@ public class GodotAndroidVkAds extends GodotPlugin {
             }
 
             @Override
+            public void onFailedToShow(@NonNull RewardedAd rewardedAd) {
+                Log.w("godot", "VkAds: onRewardedVideoAdFailedToShow");
+                emitSignal("_on_rewarded_video_ad_failed_to_show", "Rewarded ad failed to show");
+            }
+
+            @Override
             public void onDismiss(@NonNull RewardedAd rewardedAd) {
                 Log.w("godot", "VkAds: onRewardedVideoAdDismissed");
                 emitSignal("_on_rewarded_video_ad_dismissed");
@@ -226,10 +245,7 @@ public class GodotAndroidVkAds extends GodotPlugin {
                 Log.w("godot", "VkAds: onRewardedVideoAdDisplay");
                 emitSignal("_on_rewarded_video_ad_display");
             }
-        });
-        rewardedAd.load();
-
-        return rewardedAd;
+        };
     }
 
     @UsedByGodot
@@ -255,7 +271,13 @@ public class GodotAndroidVkAds extends GodotPlugin {
     /* Interstitial */
     private InterstitialAd initInterstitial(final int id) {
         interstitialAd = new InterstitialAd(id, activity);
-        interstitialAd.setListener(new InterstitialAd.InterstitialAdListener() {
+        interstitialAd.setListener(createInterstitialAdListener());
+        interstitialAd.load();
+        return interstitialAd;
+    }
+
+    private InterstitialAd.InterstitialAdListener createInterstitialAdListener() {
+        return new InterstitialAd.InterstitialAdListener() {
             @Override
             public void onLoad(@NonNull InterstitialAd interstitialAd) {
                 Log.w("godot", "VkAds: onInterstitialAdLoaded");
@@ -275,6 +297,12 @@ public class GodotAndroidVkAds extends GodotPlugin {
             }
 
             @Override
+            public void onFailedToShow(@NonNull InterstitialAd interstitialAd) {
+                Log.w("godot", "VkAds: onInterstitialAdFailedToShow");
+                emitSignal("_on_interstitial_ad_failed_to_show", "Interstitial ad failed to show");
+            }
+
+            @Override
             public void onDismiss(@NonNull InterstitialAd interstitialAd) {
                 Log.w("godot", "VkAds: onInterstitialAdDismissed");
                 emitSignal("_on_interstitial_ad_dismissed");
@@ -291,10 +319,7 @@ public class GodotAndroidVkAds extends GodotPlugin {
                 Log.w("godot", "VkAds: onInterstitialAdDisplay");
                 emitSignal("_on_interstitial_ad_display");
             }
-        });
-        interstitialAd.load();
-
-        return interstitialAd;
+        };
     }
 
     @UsedByGodot
