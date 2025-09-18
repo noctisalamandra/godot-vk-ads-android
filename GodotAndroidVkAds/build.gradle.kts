@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
@@ -22,7 +23,6 @@ android {
         manifestPlaceholders["godotPluginName"] = pluginName
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName
         buildConfigField("String", "GODOT_PLUGIN_NAME", "\"${pluginName}\"")
-        setProperty("archivesBaseName", pluginName)
     }
 
     compileOptions {
@@ -32,9 +32,13 @@ android {
 }
 
 dependencies {
-    implementation("com.my.target:mytarget-sdk:5.27.1")         // Vk mobile ads
-    implementation("org.godotengine:godot:4.4.1.stable")        // Godot
-    implementation("androidx.test.ext:junit:1.2.1")
+    implementation("com.my.target:mytarget-sdk:5.27.2")
+    implementation("androidx.test.ext:junit:1.3.0")
+    compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+}
+
+tasks.withType<AbstractArchiveTask>().configureEach {
+    archiveBaseName.set(pluginName)
 }
 
 val copyDebugAARToPluginAddons by tasks.registering(Copy::class) {
