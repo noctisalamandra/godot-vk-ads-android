@@ -34,7 +34,7 @@ android {
 dependencies {
     implementation("com.my.target:mytarget-sdk:5.27.2")
     implementation("androidx.test.ext:junit:1.3.0")
-    compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    implementation("org.godotengine:godot:4.5.0.stable")
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {
