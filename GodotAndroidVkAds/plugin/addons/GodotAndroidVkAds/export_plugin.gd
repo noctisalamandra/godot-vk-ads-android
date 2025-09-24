@@ -30,9 +30,9 @@ class AndroidExportPlugin extends EditorExportPlugin:
 	
 	func _get_android_dependencies(platform, debug):
 		if debug:
-			return PackedStringArray(["com.my.target:mytarget-sdk:5.22.1"])
+			return PackedStringArray(["com.my.target:mytarget-sdk:5.27.2"])
 		else:
-			return PackedStringArray(["com.my.target:mytarget-sdk:5.22.1"])
+			return PackedStringArray(["com.my.target:mytarget-sdk:5.27.2"])
 
 
 	func _get_name():
