@@ -35,13 +35,14 @@ func _enter_tree():
 
 # Initialization
 func init() -> bool:
-    if Engine.has_singleton("GodotAndroidVkAds"):
-        _vk_singleton = Engine.get_singleton("GodotAndroidVkAds")
-        if not _vk_singleton.is_connected("_on_banner_loaded", self, "_on_banner_loaded"):
-            connect_signals()
-            _vk_singleton.init()
-            return true
-    return false
+	if Engine.has_singleton("GodotAndroidVkAds"):
+		_vk_singleton = Engine.get_singleton("GodotAndroidVkAds")
+		var banner_callable = Callable(self, "_on_banner_loaded")
+		if not _vk_singleton.is_connected("_on_banner_loaded", banner_callable):
+			connect_signals()
+		_vk_singleton.init()
+		return true
+	return false
 
 # Connect the VkAds Java signals
 func connect_signals() -> void:
