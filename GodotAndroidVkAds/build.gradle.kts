@@ -32,9 +32,9 @@ android {
 }
 
 dependencies {
-    implementation("com.my.target:mytarget-sdk:5.27.2")
+    implementation("com.my.target:mytarget-sdk:5.27.4")
     implementation("androidx.test.ext:junit:1.3.0")
-    implementation("org.godotengine:godot:4.5.0.stable")
+    implementation("org.godotengine:godot:4.6.0.stable")
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {
