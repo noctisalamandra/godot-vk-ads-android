@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation("com.my.target:mytarget-sdk:5.27.4")
+    implementation("com.my.target:mytarget-sdk:5.45.3")
     implementation("androidx.test.ext:junit:1.3.0")
     implementation("org.godotengine:godot:4.6.0.stable")
 }
