@@ -1,5 +1,7 @@
 # Godot Android VK Ads
 
+[🇷🇺 Русская версия](README.ru.md)
+
 Android plugin for [Godot 4](https://godotengine.org/) that integrates [VK Ads SDK (myTarget)](https://target.my.com/adv/help/sdk/).
 
 Supports banner, interstitial, and rewarded video ads.
